@@ -1,5 +1,7 @@
 ## ThousandEyes OTel | Zero Touch Testing Environment (ZTTE)
 
+###  Deploy OTel Collector and other Visualization Services to stream OTel data from ThousandEyes
+
 ### Micro Service List
 - Grafana
 - Prometheus
