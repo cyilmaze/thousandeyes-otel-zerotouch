@@ -34,6 +34,10 @@ docker compose up -d
 ```
 
 3. Configure ThousandEyes OpenTelemetery Integration on ThousandEyes Portal
+Important Config Options:
+- Target: gRPC
+- Data Model Version: v1
+- OpenTelemetry Signal: Metric
 ```
 https://docs.thousandeyes.com/product-documentation/integration-guides/custom-built-integrations/opentelemetry/configure-opentelemetry-streams/ui
 ```
