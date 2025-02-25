@@ -1,0 +1,26 @@
+receivers:
+  otlp/notls:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+
+processors:
+  batch:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+
+service:
+  telemetry:
+    logs:
+      level: DEBUG
+    metrics:
+      level: detailed
+      address: ":8888"
+  
+  pipelines:
+    metrics:
+      receivers: [otlp/notls]
+      processors: [batch]
+      exporters: [prometheus]

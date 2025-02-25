@@ -1,0 +1,72 @@
+services:
+  nginx:
+    image: lscr.io/linuxserver/nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/Warsaw
+    networks:
+      - thousandeyes-otel-zerotouch
+    ports:
+      - '80:80'
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - thousandeyes-otel-zerotouch
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana-storage:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    restart: unless-stopped
+    networks:
+      - thousandeyes-otel-zerotouch
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    container_name: otel-collector
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    restart: unless-stopped
+    networks:
+      - thousandeyes-otel-zerotouch
+    ports:
+      - "4317:4317" # OTLP gRPC receiver
+      - "8888:8888" # Prometheus metrics exposed by the collector
+      - "8889:8889" # Prometheus exporter metrics
+    volumes:
+      - ./config.yaml:/etc/otelcol-contrib/config.yaml
+
+  ngrok:
+    image: ngrok/ngrok
+    container_name: ngrok
+    command: ["http", "http://otel-collector:4317", "--url=${NGROK_DOMAIN}", "--host-header=rewrite"]
+    #command: ["http", "http://nginx:80", "--url=large-pug-brightly.ngrok-free.app", "--host-header=rewrite"]
+    restart: unless-stopped
+    environment:
+      - NGROK_AUTHTOKEN="${NGROK_AUTHTOKEN}"
+    networks:
+      - thousandeyes-otel-zerotouch
+    ports:
+      - "4040:4040"
+
+networks:
+  thousandeyes-otel-zerotouch: {}
+
+volumes:
+  grafana-storage: {}
+  prometheus-data: {}
