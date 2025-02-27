@@ -1,3 +1,5 @@
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/cyilmaze/thousandeyes-otel-zerotouch)
+
 # ThousandEyes OTel | Zero Touch Testing Environment (ZTTE)
 
 **Deploy OTel Collector and other Visualization Services to stream OTel data from ThousandEyes**
