@@ -2,8 +2,14 @@ services:
   grafana:
     image: grafana/grafana
     restart: unless-stopped
+    environment:
+      - GF_DASHBOARDS_JSON_ENABLED=true
+      - GF_DASHBOARDS_JSON_PATH=/etc/grafana/dashboards
+      - GF_DEFAULT_DASHBOARD_PATH=/etc/grafana/dashboards/te-otel-dashboard.json  # Specify the dashboard as home
     volumes:
       - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./configs/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./configs/grafana/dashboards:/etc/grafana/provisioning/dashboards
       - grafana-storage:/var/lib/grafana
     networks:
       - default
